@@ -6,11 +6,21 @@ public class Inventory : MonoBehaviour
 {
     private Slot[] slotList;
 
+    private float targetAlpha = 1;
+    public float smoothing = 5;
+    private CanvasGroup canvasGroup;
     public virtual void Start()
     {
         slotList = GetComponentsInChildren<Slot>();
+        canvasGroup = GetComponent<CanvasGroup>();
     }
-
+    private void Update()
+    {
+        if (canvasGroup.alpha != targetAlpha)
+        {
+            canvasGroup.alpha = Mathf.Lerp(canvasGroup.alpha, targetAlpha, (smoothing * Time.deltaTime) / Mathf.Abs(targetAlpha - canvasGroup.alpha));
+        }
+    }
     public bool StoreItem(int id)
     {
         Item item = InventoryManager.Instance.GetItemById(id);
@@ -82,5 +92,27 @@ public class Inventory : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public void Show()
+    {
+        canvasGroup.blocksRaycasts = true;
+        targetAlpha = 1;
+    }
+    public void Hide()
+    {
+        canvasGroup.blocksRaycasts = false;
+        targetAlpha = 0;
+    }
+    public void DisplaySwitch()
+    {
+        if(targetAlpha == 0)
+        {
+            Show();
+        }
+        else
+        {
+            Hide();
+        }
     }
 }

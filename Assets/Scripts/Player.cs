@@ -15,8 +15,16 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.G))
         {
-            int id = Random.Range(1, 13);
+            int id = Random.Range(1, 3 );
             Knapsack.Instance.StoreItem(id);
+        }
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            Knapsack.Instance.DisplaySwitch();
+        }
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            Chest.Instance.DisplaySwitch();
         }
     }
 }

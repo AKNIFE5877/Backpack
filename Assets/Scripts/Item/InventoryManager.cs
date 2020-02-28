@@ -25,15 +25,34 @@ public class InventoryManager : MonoBehaviour
 
     private ToolTip toolTip;
     private bool isToolTipShow = false;
+    private Vector2 toolTipPositionOffset = new Vector2(10, -10);
     private Canvas canvas;
 
-    private Vector2 toolTipPositionOffset = new Vector2(10, -10);
 
+    private ItemUI pickedItem;
+    public ItemUI PickedItem
+    {
+        get
+        {
+            return pickedItem;
+        }
+    }
+
+    private bool isPickedItem = false;
+    public bool IsPickedItem
+    {
+        get
+        {
+            return isPickedItem;
+        }
+    }
     private void Start()
     {
         ParseItemJson();
         toolTip = GameObject.FindObjectOfType<ToolTip>();
         canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
+        pickedItem = GameObject.Find("PickedItem").GetComponent<ItemUI>();
+        pickedItem.Hide();
     }
 
 
@@ -64,7 +83,7 @@ public class InventoryManager : MonoBehaviour
                     item = new Consumable(id, name, type, quality, description, capacity, buyPrice, sellPrice, spritePath, hp, mp);
                     break;
                 case ItemType.Equipment:
-                    int strength= (int)itemjd["strength"];
+                    int strength = (int)itemjd["strength"];
                     int intellect = (int)itemjd["intellect"];
                     int agility = (int)itemjd["agility"];
                     int stamina = (int)itemjd["stamina"];
@@ -72,14 +91,16 @@ public class InventoryManager : MonoBehaviour
                     item = new Equipment(id, name, type, quality, description, capacity, buyPrice, sellPrice, spritePath, strength, intellect, agility, stamina, equipmentType);
                     break;
                 case ItemType.Weapon:
+                    int damage = (int)itemjd["damage"];
+                    WeaponType weaponType = (WeaponType)System.Enum.Parse(typeof(WeaponType), itemjd["weaponType"].ToString());
+                    item = new Weapon(id, name, type, quality, description, capacity, buyPrice, sellPrice, spritePath, damage, weaponType);
                     break;
                 case ItemType.Material:
-                    break;
-                default:
+                    item = new Material(id, name, type, quality, description, capacity, buyPrice, sellPrice, spritePath);
                     break;
             }
             itemList.Add(item);
-            Debug.Log(item.ID.ToString() + "- " + item.Name.ToString() + "- " + item.Description.ToString() + "- " + item.ItemType.ToString() + "- " + item.Quality.ToString() + "- " + item.Sprite.ToString() + "- " + item.BuyPrice.ToString() + "- ");
+            //Debug.Log(item.ID.ToString() + "- " + item.Name.ToString() + "- " + item.Description.ToString() + "- " + item.ItemType.ToString() + "- " + item.Quality.ToString() + "- " + item.Sprite.ToString() + "- " + item.BuyPrice.ToString() + "- ");
         }
     }
 
@@ -97,6 +118,7 @@ public class InventoryManager : MonoBehaviour
 
     public void ShowToolTip(string content)
     {
+        if (isPickedItem) return;
         isToolTipShow = true;
         toolTip.Show(content);
     }
@@ -105,13 +127,46 @@ public class InventoryManager : MonoBehaviour
         isToolTipShow = false;
         toolTip.Hide();
     }
+
+
+    public void PickupItem(Item item, int amount)
+    {
+        pickedItem.SetItem(item, amount);
+        isPickedItem = true;
+        PickedItem.Show();
+        toolTip.Hide();
+    }
+ 
+    public void RemoveItem(int amount)
+    {
+        PickedItem.ReduceAmount(amount);
+        if (PickedItem.Amount <= 0)
+        {
+            isPickedItem = false;
+            PickedItem.Hide();
+        }
+    }
+
     private void Update()
     {
+        if (isPickedItem)
+        {
+            Vector2 position;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.GetComponent<RectTransform>(), Input.mousePosition, null, out position);
+            pickedItem.SetLocalPosition(position);
+        }
+        else
         if (isToolTipShow)
         {
             Vector2 position;
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.GetComponent<RectTransform>(), Input.mousePosition, null,out position);
-            toolTip.SetLocalPosition(position+ toolTipPositionOffset);
-        } 
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.GetComponent<RectTransform>(), Input.mousePosition, null, out position);
+            toolTip.SetLocalPosition(position + toolTipPositionOffset);
+        }
+
+        if (isPickedItem && Input.GetMouseButtonDown(0) && UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject(-1)==false)
+        {
+            isPickedItem = false;
+            pickedItem.Hide();
+        }
     }
 }

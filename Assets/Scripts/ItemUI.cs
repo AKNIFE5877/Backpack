@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class ItemUI : MonoBehaviour
 {
-    public Item Item { get; set; }
-    public int Amount { get; set; }
+    public Item Item { get; private set; }
+    public int Amount { get; private set; }
 
     private Image itemImage;
     private Image ItemImage
@@ -33,8 +33,21 @@ public class ItemUI : MonoBehaviour
         }
     }
 
+    private float targetScale = 1;
+    public float smoothing = 5;
+    public Vector3 animationScale = new Vector3(1.2f, 1.2f, 1.2f);
+    private void Update()
+    {
+        if (transform.localScale.x != targetScale)
+        {
+            float scale = Mathf.Lerp(transform.localScale.x, targetScale, (smoothing * Time.deltaTime) / Mathf.Abs(targetScale - transform.localScale.x));
+            transform.localScale = new Vector3(scale, scale, scale);
+        }
+    }
+
     public void SetItem(Item item, int amount = 1)
     {
+        transform.localScale = animationScale;
         this.Item = item;
         this.Amount = amount;
         //ui
@@ -48,8 +61,12 @@ public class ItemUI : MonoBehaviour
             AmountText.text = "";
         }
     }
+
+
     public void AddAmount(int amount = 1)
     {
+        transform.localScale = animationScale;
+
         this.Amount += amount;
         if (Item.Capacity > 1)
         {
@@ -61,5 +78,43 @@ public class ItemUI : MonoBehaviour
         }
 
     }
+    public void ReduceAmount(int amount = 1)
+    {
+        transform.localScale = animationScale;
+        this.Amount -= amount;
+        if (Item.Capacity > 1)
+        {
+            AmountText.text = Amount.ToString();
+        }
+        else
+        {
+            AmountText.text = "";
+        }
+    }
+    public void SetAmount(int amount)
+    {
+        transform.localScale = animationScale;
 
+        this.Amount = amount;
+        if (Item.Capacity > 1)
+        {
+            AmountText.text = Amount.ToString();
+        }
+        else
+        {
+            AmountText.text = "";
+        }
+    }
+    public void Show()
+    {
+        gameObject.SetActive(true);
+    }
+    public void Hide()
+    {
+        gameObject.SetActive(false);
+    }
+    public void SetLocalPosition(Vector3 position)
+    {
+        transform.localPosition = position;
+    }
 }
