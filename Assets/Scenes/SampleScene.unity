@@ -2696,6 +2696,7 @@ GameObject:
   - component: {fileID: 948845970}
   - component: {fileID: 948845969}
   - component: {fileID: 948845971}
+  - component: {fileID: 948845972}
   m_Layer: 5
   m_Name: KnapsackPanel
   m_TagString: Untagged
@@ -2771,6 +2772,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f73c46a8f59be4547be3b9f7cec98361, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  smoothing: 5
+--- !u!225 &948845972
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 948845967}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!224 &964649092 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5022148218289392894, guid: d6bc8f584147b3c4db9d9bf824ae5bc1,
@@ -3158,6 +3172,7 @@ GameObject:
   - component: {fileID: 1026726777}
   - component: {fileID: 1026726776}
   - component: {fileID: 1026726775}
+  - component: {fileID: 1026726778}
   m_Layer: 5
   m_Name: ChestPanel
   m_TagString: Untagged
@@ -3198,6 +3213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55be37e83250b814080db3fd6bfc1c0e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  smoothing: 5
 --- !u!114 &1026726776
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3233,6 +3249,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1026726773}
   m_CullTransparentMesh: 0
+--- !u!225 &1026726778
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026726773}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1001 &1065411107
 PrefabInstance:
   m_ObjectHideFlags: 0
