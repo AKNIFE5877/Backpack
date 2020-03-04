@@ -46,9 +46,13 @@ public class InventoryManager : MonoBehaviour
             return isPickedItem;
         }
     }
-    private void Start()
+    private void Awake()
     {
         ParseItemJson();
+        
+    }
+    private void Start()
+    {
         toolTip = GameObject.FindObjectOfType<ToolTip>();
         canvas = GameObject.Find("Canvas").GetComponent<Canvas>();
         pickedItem = GameObject.Find("PickedItem").GetComponent<ItemUI>();
@@ -168,5 +172,21 @@ public class InventoryManager : MonoBehaviour
             isPickedItem = false;
             pickedItem.Hide();
         }
+    }
+
+    public void SaveInventory()
+    {
+        Knapsack.Instance.SaveInventory();
+        Chest.Instance.SaveInventory();
+        CharacterPanel.Instance.SaveInventory();
+        Forge.Instance.SaveInventory();
+    }
+
+    public void LoadInventory()
+    {
+        Knapsack.Instance.LoadInventory();
+        Chest.Instance.LoadInventory();
+        CharacterPanel.Instance.LoadInventory();
+        Forge.Instance.LoadInventory(); 
     }
 }

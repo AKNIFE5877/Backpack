@@ -52,8 +52,30 @@ public class Slot : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IP
 
     }
 
-    public void OnPointerDown(PointerEventData eventData)
+    public virtual void OnPointerDown(PointerEventData eventData)
     {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            if (InventoryManager.Instance.IsPickedItem==false&& transform.childCount > 0)
+            {
+                ItemUI currentItemUI = transform.GetChild(0).GetComponent<ItemUI>(); 
+                if(currentItemUI .Item is Equipment||currentItemUI.Item is Weapon)
+                {
+                    currentItemUI.ReduceAmount(1);
+                    Item currentItem = currentItemUI.Item;
+                    if (currentItemUI.Amount <= 0)
+                    {
+                        DestroyImmediate(currentItemUI.gameObject);
+                        InventoryManager.Instance.HideToolTip();
+                    }
+                    CharacterPanel.Instance.PutOn(currentItem);
+                }
+            }
+        }
+        if (eventData.button != PointerEventData.InputButton.Left)
+        {
+            return;
+        }
         ////自身是空 1、IsPickedItem==true 放在这个位置
         //            //按下ctrl   放下一个
         //            //没有按下ctrl  全部放下

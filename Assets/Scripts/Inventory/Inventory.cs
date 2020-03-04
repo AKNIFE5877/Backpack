@@ -1,10 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class Inventory : MonoBehaviour
 {
-    private Slot[] slotList;
+    protected Slot[] slotList;
 
     private float targetAlpha = 1;
     public float smoothing = 5;
@@ -86,7 +87,7 @@ public class Inventory : MonoBehaviour
     {
         foreach (Slot slot in slotList)
         {
-            if (slot.transform.childCount >= 1 && slot.GetItemID() == item.ID &&slot.IsFilled()==false)
+            if (slot.transform.childCount >= 1 && slot.GetItemID() == item.ID && slot.IsFilled() == false)
             {
                 return slot;
             }
@@ -106,13 +107,56 @@ public class Inventory : MonoBehaviour
     }
     public void DisplaySwitch()
     {
-        if(targetAlpha == 0)
+        if (targetAlpha == 0)
         {
             Show();
         }
         else
         {
             Hide();
+        }
+    }
+
+    //save
+    public void SaveInventory()
+    {
+        StringBuilder sb = new StringBuilder();
+        foreach (Slot slot in slotList)
+        {
+            if (slot.transform.childCount > 0)
+            {
+                ItemUI itemUI = slot.transform.GetChild(0).GetComponent<ItemUI>();
+                sb.Append(itemUI.Item.ID + "," + itemUI.Amount + "-");
+            }
+            else
+            {
+                sb.Append("0-");
+            }
+        }
+        PlayerPrefs.SetString(this.gameObject.name, sb.ToString());
+    }
+    public void LoadInventory()
+    {
+        if (!PlayerPrefs.HasKey(this.gameObject.name))
+        {
+            return;
+        }
+        string str = PlayerPrefs.GetString(this.gameObject.name);
+        string[] itemArray = str.Split('-');
+        for (int i = 0; i < itemArray.Length-1; i++)
+        {
+            string itemstr = itemArray[i];
+            if (itemstr != "0")
+            {
+                string[] temp = itemstr.Split(',');
+                int id = int.Parse(temp[0]);
+                int amount = int.Parse(temp[1]);
+                Item item = InventoryManager.Instance.GetItemById(id);
+                for (int j = 0; j < amount; j++)
+                {
+                    slotList[i].StoreItem(item);
+                }
+            }
         }
     }
 }

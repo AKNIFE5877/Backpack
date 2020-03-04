@@ -105,6 +105,15 @@ public class ItemUI : MonoBehaviour
             AmountText.text = "";
         }
     }
+
+    public void Exchange(ItemUI itemUI)
+    {
+        Item itemtemp = itemUI.Item;
+        int amounttemp = itemUI.Amount;
+        itemUI.SetItem(this.Item, this.Amount);
+        this.SetItem(itemtemp, amounttemp);
+    }
+
     public void Show()
     {
         gameObject.SetActive(true);
